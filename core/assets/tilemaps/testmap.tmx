@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="2" nextobjectid="1">
+ <tileset firstgid="1" source="bluehills_bcsilva.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJztzrsNwjAURuG4gIaahucKQMUCoYEJAMEIvHbgESaABhagggXYjHOlpIksyyBwJHR/6ZMlFz6OIp1Op9Pp/nNb7LDHAQmOgdonnHHPueAaoH+ztDMPGA8llC1vV9A07v7T0RdVTzXU0ZAmWmij6+j3jbv9Tj/TkSZ6qZjGwPKHIXejH/Tz5I0xnQmm6T9mnHOP9rf6YkFviRXW2ATuf0r72td+MW3tF99/AbrMxTs=
+  </data>
+ </layer>
+</map>

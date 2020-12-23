@@ -1,0 +1,41 @@
+28 DAYS UNTIL GOAL OF JAN 20th
+GOALS: ADJUST AS NECESSARY- most of these need to be detailed/expedited so the game can be actually
+playable
+--------------------------------------------------------------------------------------------
+
+- Create a builder for the Character class that has the ability to place actors at any point on the
+  character itself--- makes it flexible to add extra items to the character, ex. hat
+    -list <Actor>, Somehow associate where on the base the actors are positioned??
+
+- Figure out how to associate a tilemap with Box2D bodies-- necessary for actors to interact
+  with the map
+-------------------------------  Goal : Dec 26 ---------------------------------------------
+- create a level interface
+
+-------------------------------  Goal : Dec 27 ---------------------------------------------
+
+-figure out enemies/ npcs
+  - i think you can use the objects layer of Tiled to design the spawn point of npc/enemies
+  - actually look into using tiled as a level editor
+  - AI? wander map??? dialogue?????
+
+-------------------------------  Goal : Jan 1 ----------------------------------------------
+
+-make weapons do stuff
+  shoot --- projectile class perhaps?
+  non-shootables? knife? mines? punch???
+
+-------------------------------  Goal : Jan 7 ----------------------------------------------
+
+- figure out serializable objects to create/load levels
+  - controller loads level from file -> use level interface to control it
+  - save files???
+
+------------------------------- Goal: Jan 10 ------------------------------------------------
+
+- game gui/ story
+-------------------------------  Goal : Jan 20 ----------------------------------------------
+
+
+
+

@@ -3,7 +3,7 @@ package com.armadillo.game.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import com.armadillo.game.ArmadilloMain;
+import com.armadillo.game.controller.ArmadilloController;
 
 public class HtmlLauncher extends GwtApplication {
 
@@ -17,6 +17,6 @@ public class HtmlLauncher extends GwtApplication {
 
         @Override
         public ApplicationListener createApplicationListener () {
-                return new ArmadilloMain();
+                return new ArmadilloController();
         }
 }
