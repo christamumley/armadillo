@@ -51,8 +51,8 @@ public class MyActor extends Actor {
     fixtureDef.shape = shape;
     fixtureDef.density = .5f;
     fixtureDef.restitution = .2f;
-    fixtureDef.filter.categoryBits = PHYSICS_ENTITY;
-    fixtureDef.filter.maskBits = WORLD_ENTITY | PHYSICS_ENTITY;
+    fixtureDef.filter.categoryBits = MaskBits.PHYSICS_ENTITY.mask;
+    fixtureDef.filter.maskBits = (short) (MaskBits.WORLD_ENTITY.mask | MaskBits.PHYSICS_ENTITY.mask);
 
     body.createFixture(fixtureDef);
 

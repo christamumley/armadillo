@@ -1,11 +1,14 @@
 package com.armadillo.game.controller;
 
+import com.armadillo.game.model.GameCharacter;
 import com.armadillo.game.model.MyActor;
+import com.armadillo.game.model.Weapon;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,9 +21,10 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	SpriteBatch batch;
 	MyActor actor1, actor2;
 	Stage stage;
+	GameCharacter arma;
 
 	//have the textures init internally
-	Texture img;
+	//Texture img;
 	World world;
 	Body bodyEdgeScreen;
 	OrthographicCamera camera;
@@ -35,18 +39,35 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 
 		world = new World(new Vector2(0, -9f),true);
 
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+  	camera = new OrthographicCamera();
+ 		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.update();
+
+		AssetManager manager = new AssetManager();
+		manager.load("badlogic.jpg", Texture.class);
+		manager.load("gun.png", Texture.class);
+		manager.load("arma.png", Texture.class);
+		manager.finishLoading();
+		Texture img = manager.get("badlogic.jpg", Texture.class);
+		Texture gun = manager.get("gun.png", Texture.class);
+		Texture armatext = manager.get("arma.png", Texture.class);
+
 
 		stage = new Stage();
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		//img = new Texture("badlogic.jpg");
+		//Texture gun = new Texture("gun.png");
+
 		// Create two identical sprites slightly offset from each other vertically
-		actor1 = new MyActor(world, img, 47, 100);
-		actor1.setVisible(true);
-		actor1.setDebug(true);
-		stage.addActor(actor1);
+//		actor1 = new MyActor(world, img, 47, 100);
+//		actor1.setVisible(true);
+//		actor1.setDebug(true);
+//		stage.addActor(actor1);
+
+		Weapon gunw = new Weapon(gun);
+		arma = new GameCharacter(world, 100, armatext, gunw);
+		arma.setDebug(true);
+		stage.addActor(arma);
 
 		actor2 = new MyActor(world, img, 300, 600);
 		actor2.setVisible(true);
@@ -83,6 +104,7 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 		bodyEdgeScreen = world.createBody(bodyDef4);
 		bodyEdgeScreen.createFixture(fixtureDef4);
 
+		edgeShape2.dispose();
 		edgeShape.dispose();
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.
 				getHeight());
@@ -102,7 +124,8 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	}
 	@Override
 	public void dispose() {
-		img.dispose();
+		stage.dispose();
+		batch.dispose();
 		world.dispose();
 	}
 
@@ -127,7 +150,7 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	@Override
 	public boolean keyUp(int keycode) {
 		System.out.print("keyup");
-		actor2.getBody().applyForceToCenter(0f,1000f,true);
+		//actor2.getBody().applyForceToCenter(0f,1000f,true);
 		return true;
 	}
 

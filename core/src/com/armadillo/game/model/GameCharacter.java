@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import java.util.Objects;
 
 /**
  * <p>
@@ -27,19 +28,16 @@ import com.badlogic.gdx.scenes.scene2d.Group;
  * the group.
  * </p>
  */
-public abstract class Character extends Group {
+public class GameCharacter extends Group {
 
   //TODO: manage constants
   final float PIXELS_TO_METERS = 100f;
-  final short PHYSICS_ENTITY = 0x1;    // 0001
-  final short WORLD_ENTITY = 0x1 << 1; // 0010 or 0x2 in hex
 
-  //character texture
-  Texture texture;
   //the Box2d physics simulation object
   Body body;
   //Internal sprite for image management
   Sprite baseSprite;
+  Texture texture;
 
   //health points for this character
   private int hp;
@@ -48,43 +46,56 @@ public abstract class Character extends Group {
   private Weapon weapon;
 
   //intializes the base Character
-  private Actor base;
+  //private Actor base;
 
   /**
    * Creates the Character Object. Can only be accessed with the Character Builder class
    * @param hp health points of the Character, cannot be less than or equal to zero.
    * @param weapon the Character's weapon. Can be null if the Character has no weapon.
    */
-  public Character(World world, int hp, Texture basetexure, Weapon weapon) {
+  public GameCharacter(World world, int hp, Texture texture, Weapon weapon) {
 
-    if(hp <= 0) {
-      throw new IllegalArgumentException("Health points cannot be initialized as zero, or less.");
-    }
+    Objects.requireNonNull(texture);
+    this.texture = texture;
 
-    if(base == null) {
-      throw new IllegalArgumentException("Base Character cannot be null.");
-    }
+    Objects.requireNonNull(weapon);
+    this.weapon = weapon;
 
-    this.hp = hp;
+    this.setX(400);
+    this.setY(400);
 
-    //set base image
-    this.baseSprite = new Sprite(basetexure);
+    setBounds(getX(),getY(),texture.getWidth(),texture.getHeight());
+
+    BodyDef bodyDef = new BodyDef();
+    bodyDef.type = BodyDef.BodyType.DynamicBody;
+    bodyDef.position.set((this.getX() + this.getWidth()/2) /
+            PIXELS_TO_METERS,
+        (this.getY() + this.getHeight()/2) / PIXELS_TO_METERS);
+    this.body = world.createBody(bodyDef);
+
+    PolygonShape shape = new PolygonShape();
+    shape.setAsBox(this.getWidth()/2 / PIXELS_TO_METERS, this.getHeight()
+        /2 / PIXELS_TO_METERS);
+
+    FixtureDef fixtureDef = new FixtureDef();
+    fixtureDef.shape = shape;
+    fixtureDef.density = .5f;
+    fixtureDef.restitution = .2f;
+    fixtureDef.filter.categoryBits = MaskBits.PHYSICS_ENTITY.mask;
+    fixtureDef.filter.maskBits = (short) (MaskBits.WORLD_ENTITY.mask | MaskBits.PHYSICS_ENTITY.mask);
+
+    body.createFixture(fixtureDef);
+
+    //init sprite
+    this.baseSprite = new Sprite(texture);
+    this.baseSprite.setX(this.getX());
     this.baseSprite.setY(this.getY());
 
-    //init physics body
-    this.initBody(world);
-
-    //sets the weapon and centers it at the character
-    this.setWeapon(weapon);
-
-    //add base character and weapon to this Group
-    this.addActor(this.base);
-    this.addActor(this.weapon);
+    shape.dispose();
   }
 
   @Override
   public void draw(Batch batch, float alpha){
-
     float x = (body.getPosition().x * PIXELS_TO_METERS) - this.getWidth()/2;
     float y = (body.getPosition().y * PIXELS_TO_METERS) - this.getHeight()/2;
     float angle = (float)Math.toDegrees(body.getAngle());
@@ -97,18 +108,16 @@ public abstract class Character extends Group {
 
     this.setOrigin(baseSprite.getOriginX(), baseSprite.getOriginY());
 
-    //update weapon position
-
     //setting the weapon to the center of the Base
-    float weaponY = base.getY() + (base.getHeight()/2);
-    float weaponX = base.getX() + (base.getWidth()/2);
+    float weaponY = this.getY() + (this.getHeight()/2);
+    float weaponX = this.getX() + (this.getWidth()/2);
     this.weapon.setPosition(weaponX, weaponY);
     this.weapon.setRotation(angle);
     this.weapon.setOrigin(baseSprite.getOriginX(), baseSprite.getOriginY());
 
     //drawing the base and the weapons
-    this.weapon.draw(batch, alpha);
     this.baseSprite.draw(batch, alpha);
+    this.weapon.draw(batch, alpha);
   }
 
   /**
@@ -125,8 +134,8 @@ public abstract class Character extends Group {
     this.weapon = weapon;
 
     //setting the weapon to the center of the Base
-    float weaponY = base.getY() + (base.getHeight()/2);
-    float weaponX = base.getX() + (base.getWidth()/2);
+    float weaponY = this.getY() + (this.getHeight()/2);
+    float weaponX = this.getX() + (this.getWidth()/2);
     this.weapon.setPosition(weaponX, weaponY);
 
     this.addActor(weapon);
@@ -167,7 +176,6 @@ public abstract class Character extends Group {
 
   //inits the Physics simulation
   private void initBody(World world) {
-
     BodyDef bodyDef = new BodyDef();
     bodyDef.type = BodyDef.BodyType.DynamicBody;
     bodyDef.position.set((this.getX() + this.getWidth()/2) /
@@ -183,8 +191,8 @@ public abstract class Character extends Group {
     fixtureDef.shape = shape;
     fixtureDef.density = .5f;
     fixtureDef.restitution = .2f;
-    fixtureDef.filter.categoryBits = PHYSICS_ENTITY;
-    fixtureDef.filter.maskBits = WORLD_ENTITY | PHYSICS_ENTITY;
+    fixtureDef.filter.categoryBits = MaskBits.PHYSICS_ENTITY.mask;
+    fixtureDef.filter.maskBits = (short) (MaskBits.WORLD_ENTITY.mask | MaskBits.PHYSICS_ENTITY.mask);
 
     body.createFixture(fixtureDef);
 
