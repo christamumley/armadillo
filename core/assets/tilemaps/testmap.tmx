@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="2" nextobjectid="1">
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="31">
  <tileset firstgid="1" source="bluehills_bcsilva.tsx"/>
  <layer id="1" name="Tile Layer 1" width="32" height="32">
   <data encoding="base64" compression="zlib">
    eJztzrsNwjAURuG4gIaahucKQMUCoYEJAMEIvHbgESaABhagggXYjHOlpIksyyBwJHR/6ZMlFz6OIp1Op9Pp/nNb7LDHAQmOgdonnHHPueAaoH+ztDMPGA8llC1vV9A07v7T0RdVTzXU0ZAmWmij6+j3jbv9Tj/TkSZ6qZjGwPKHIXejH/Tz5I0xnQmm6T9mnHOP9rf6YkFviRXW2ATuf0r72td+MW3tF99/AbrMxTs=
   </data>
  </layer>
+ <objectgroup id="2" name="ground">
+  <object id="27" x="6.66667" y="513.333" width="278.667" height="97.3333"/>
+  <object id="29" x="285.333" y="513.333">
+   <polygon points="0,0 33.3333,13.3333 92,54.6667 110.667,64 134.667,70.6667 156,61.3333 201.333,28 224,10.6667 230.667,41.3333 246.667,74.6667 276,109.333 320,133.333 373.333,137.333 425.333,112 458.667,77.3333 474.667,49.3333 472,201.333 -1.33333,186.667"/>
+  </object>
+  <object id="30" x="762.667" y="558.667">
+   <polygon points="0,0 17.3333,-62.1176 45.3333,-101.647 92,-135.529 130.667,-144 165.333,-138.353 194.667,-125.647 214.667,-110.118 234.667,-84.7059 252,-53.6471 264,-18.3529"/>
+  </object>
+ </objectgroup>
 </map>

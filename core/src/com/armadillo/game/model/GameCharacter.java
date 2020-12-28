@@ -62,7 +62,7 @@ public class GameCharacter extends Group {
     this.weapon = weapon;
 
     this.setX(400);
-    this.setY(400);
+    this.setY(700);
 
     setBounds(getX(),getY(),texture.getWidth(),texture.getHeight());
 
@@ -171,6 +171,14 @@ public class GameCharacter extends Group {
    */
   public int getHp() {
     return this.hp;
+  }
+
+  /**
+   * Gets the Box2d Body of the Character.
+   * @return the Body of the Character.
+   */
+  public Body getBody() {
+    return this.body;
   }
 
 

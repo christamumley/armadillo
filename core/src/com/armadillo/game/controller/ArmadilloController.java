@@ -7,19 +7,24 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public class ArmadilloController extends ApplicationAdapter implements InputProcessor {
 	SpriteBatch batch;
-	MyActor actor1, actor2;
 	Stage stage;
 	GameCharacter arma;
 
@@ -31,6 +36,10 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	final float PIXELS_TO_METERS = 100f;
 	final short PHYSICS_ENTITY = 0x1;    // 0001
 	final short WORLD_ENTITY = 0x1 << 1; // 0010 or 0x2 in hex
+	long starttime;
+	Texture img;
+	TiledMap tiledMap;
+	TiledMapRenderer tiledMapRenderer;
 
 
 	@Override
@@ -42,6 +51,9 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
   	camera = new OrthographicCamera();
  		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.update();
+
+		tiledMap = new TmxMapLoader().load("tilemaps/testmap.tmx");
+		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
 		AssetManager manager = new AssetManager();
 		manager.load("badlogic.jpg", Texture.class);
@@ -69,12 +81,10 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 		arma.setDebug(true);
 		stage.addActor(arma);
 
-		actor2 = new MyActor(world, img, 300, 600);
-		actor2.setVisible(true);
-		actor2.setDebug(true);
-		stage.addActor(actor2);
-
-		stage.getViewport().setCamera(camera);
+//		actor2 = new MyActor(world, img, 300, 600);
+//		actor2.setVisible(true);
+//		actor2.setDebug(true);
+//		stage.addActor(actor2);
 
 		// Now the physics body of the bottom edge of the screen
 		BodyDef bodyDef3 = new BodyDef();
@@ -108,19 +118,30 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 		edgeShape.dispose();
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.
 				getHeight());
+		stage.getViewport().setCamera(camera);
 	}
 	@Override
 	public void render() {
-		camera.update();
 		// Step the physics simulation forward at a rate of 60hz
 		world.step(1f/60f, 6, 2);
 
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		batch.setProjectionMatrix(camera.combined);
+		//batch.setProjectionMatrix(camera.combined);
+
+		tiledMapRenderer.setView(camera);
+		tiledMapRenderer.render();
+
 		batch.begin();
 		stage.draw();
 		batch.end();
+
+
+		Vector3 position = camera.position;
+		position.x += (arma.getX() + (arma.getWidth()/2) - position.x);
+		position.y += (arma.getY() + (arma.getHeight()/2) - position.y);
+		camera.update();
+
 	}
 	@Override
 	public void dispose() {
@@ -138,6 +159,17 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	@Override
 	public boolean keyDown(int keycode) {
 
+		//TODO: put movement feature inside of Character class
+		if(keycode == Keys.UP) {
+			arma.getBody().applyForceToCenter(0f,100f,true);
+		}
+		if(keycode == Keys.LEFT) {
+			arma.getBody().applyForceToCenter(-50f,0,true);
+		}
+		if(keycode == Keys.RIGHT) {
+			arma.getBody().applyForceToCenter(50f,0,true);
+		}
+
 		return false;
 	}
 
@@ -149,8 +181,7 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	 */
 	@Override
 	public boolean keyUp(int keycode) {
-		System.out.print("keyup");
-		//actor2.getBody().applyForceToCenter(0f,1000f,true);
+
 		return true;
 	}
 
@@ -233,4 +264,13 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	public boolean scrolled(float amountX, float amountY) {
 		return false;
 	}
+
+	/**
+	 * Retrieves the camera from the controller.
+	 * @return an orthographic camera from the controller
+	 */
+	public OrthographicCamera getCamera() {
+		return camera;
+	}
+
 }
