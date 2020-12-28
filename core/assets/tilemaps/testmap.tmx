@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="31">
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="48">
  <tileset firstgid="1" source="bluehills_bcsilva.tsx"/>
  <layer id="1" name="Tile Layer 1" width="32" height="32">
   <data encoding="base64" compression="zlib">
@@ -8,11 +8,41 @@
  </layer>
  <objectgroup id="2" name="ground">
   <object id="27" x="6.66667" y="513.333" width="278.667" height="97.3333"/>
-  <object id="29" x="285.333" y="513.333">
-   <polygon points="0,0 33.3333,13.3333 92,54.6667 110.667,64 134.667,70.6667 156,61.3333 201.333,28 224,10.6667 230.667,41.3333 246.667,74.6667 276,109.333 320,133.333 373.333,137.333 425.333,112 458.667,77.3333 474.667,49.3333 472,201.333 -1.33333,186.667"/>
+  <object id="31" x="286" y="514.5">
+   <polygon points="0,0 22.5,4.5 58,26.5 96,51 97,94 0.5,96.5"/>
   </object>
-  <object id="30" x="762.667" y="558.667">
-   <polygon points="0,0 17.3333,-62.1176 45.3333,-101.647 92,-135.529 130.667,-144 165.333,-138.353 194.667,-125.647 214.667,-110.118 234.667,-84.7059 252,-53.6471 264,-18.3529"/>
+  <object id="32" x="383" y="566">
+   <polygon points="0,0 25.5,12 37.5,12 63.5,5 93,-16.5 94,41.5 1,41"/>
+  </object>
+  <object id="33" x="475.5" y="550">
+   <polygon points="0,0 36,-25 42,1.5 64.5,42.5 78.5,54 4,58"/>
+  </object>
+  <object id="36" x="554" y="604">
+   <polygon points="0,0 30,22 62.5,32.5 89,36.5 88,77 -13.5,69.5"/>
+  </object>
+  <object id="37" x="554" y="604">
+   <polygon points="0,0 30,22 62.5,32.5 89,36.5 88,77 -13.5,69.5"/>
+  </object>
+  <object id="39" x="642.5" y="640">
+   <polygon points="0,0 28,-2 64,-14.5 94.5,-43.5 110,-70 108,28.5 0,30.5"/>
+  </object>
+  <object id="42" x="480" y="610">
+   <polygon points="0,0 71.5,-4 58.5,62"/>
+  </object>
+  <object id="43" x="480" y="610">
+   <polygon points="0,0 71.5,-4 58.5,62"/>
+  </object>
+  <object id="44" x="752" y="570">
+   <polygon points="0,0 16.5,-34.5 23,-61.5 36,-91 48.5,-106.5 51.5,54 0.5,63.5"/>
+  </object>
+  <object id="45" x="800.5" y="464">
+   <polygon points="0,0 19.5,-23 59,-40.5 96.5,-44 87,97 2,99"/>
+  </object>
+  <object id="46" x="898" y="420">
+   <polygon points="0,0 34,3.5 74.5,24 100,51.5 101.5,147.5 -9,139.5"/>
+  </object>
+  <object id="47" x="999" y="472.5">
+   <polygon points="0,0 24,42.5 25.5,94 -0.5,93.5"/>
   </object>
  </objectgroup>
 </map>

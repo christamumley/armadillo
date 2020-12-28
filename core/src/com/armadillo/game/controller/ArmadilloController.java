@@ -1,6 +1,7 @@
 package com.armadillo.game.controller;
 
 import com.armadillo.game.model.GameCharacter;
+import com.armadillo.game.model.GameMap;
 import com.armadillo.game.model.MyActor;
 import com.armadillo.game.model.Weapon;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -38,7 +39,7 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	final short WORLD_ENTITY = 0x1 << 1; // 0010 or 0x2 in hex
 	long starttime;
 	Texture img;
-	TiledMap tiledMap;
+	GameMap tiledMap;
 	TiledMapRenderer tiledMapRenderer;
 
 
@@ -52,8 +53,7 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
  		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.update();
 
-		tiledMap = new TmxMapLoader().load("tilemaps/testmap.tmx");
-		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+		tiledMap = new GameMap("tilemaps/testmap.tmx", this);
 
 		AssetManager manager = new AssetManager();
 		manager.load("badlogic.jpg", Texture.class);
@@ -86,36 +86,36 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 //		actor2.setDebug(true);
 //		stage.addActor(actor2);
 
-		// Now the physics body of the bottom edge of the screen
-		BodyDef bodyDef3 = new BodyDef();
-		bodyDef3.type = BodyDef.BodyType.StaticBody;
-		float w = Gdx.graphics.getWidth()/PIXELS_TO_METERS;
-		float h = Gdx.graphics.getHeight()/PIXELS_TO_METERS;
-		bodyDef3.position.set(0,0);
-		FixtureDef fixtureDef3 = new FixtureDef();
-		fixtureDef3.filter.categoryBits = WORLD_ENTITY;
-		fixtureDef3.filter.maskBits = PHYSICS_ENTITY;
-		EdgeShape edgeShape = new EdgeShape();
-		edgeShape.set(0,0,w,0);
-		fixtureDef3.shape = edgeShape;
-		bodyEdgeScreen = world.createBody(bodyDef3);
-		bodyEdgeScreen.createFixture(fixtureDef3);
+//		// Now the physics body of the bottom edge of the screen
+//		BodyDef bodyDef3 = new BodyDef();
+//		bodyDef3.type = BodyDef.BodyType.StaticBody;
+//		float w = Gdx.graphics.getWidth()/PIXELS_TO_METERS;
+//		float h = Gdx.graphics.getHeight()/PIXELS_TO_METERS;
+//		bodyDef3.position.set(0,0);
+//		FixtureDef fixtureDef3 = new FixtureDef();
+//		fixtureDef3.filter.categoryBits = WORLD_ENTITY;
+//		fixtureDef3.filter.maskBits = PHYSICS_ENTITY;
+//		EdgeShape edgeShape = new EdgeShape();
+//		edgeShape.set(0,0,w,0);
+//		fixtureDef3.shape = edgeShape;
+//		bodyEdgeScreen = world.createBody(bodyDef3);
+//		bodyEdgeScreen.createFixture(fixtureDef3);
+//
+//		// Now the physics body of the bottom edge of the screen
+//		BodyDef bodyDef4 = new BodyDef();
+//		bodyDef4.type = BodyDef.BodyType.StaticBody;
+//		bodyDef4.position.set(0,0);
+//		FixtureDef fixtureDef4 = new FixtureDef();
+//		fixtureDef4.filter.categoryBits = WORLD_ENTITY;
+//		fixtureDef4.filter.maskBits = PHYSICS_ENTITY;
+//		EdgeShape edgeShape2 = new EdgeShape();
+//		edgeShape2.set(w,0,w,h);
+//		fixtureDef4.shape = edgeShape2;
+//		bodyEdgeScreen = world.createBody(bodyDef4);
+//		bodyEdgeScreen.createFixture(fixtureDef4);
 
-		// Now the physics body of the bottom edge of the screen
-		BodyDef bodyDef4 = new BodyDef();
-		bodyDef4.type = BodyDef.BodyType.StaticBody;
-		bodyDef4.position.set(0,0);
-		FixtureDef fixtureDef4 = new FixtureDef();
-		fixtureDef4.filter.categoryBits = WORLD_ENTITY;
-		fixtureDef4.filter.maskBits = PHYSICS_ENTITY;
-		EdgeShape edgeShape2 = new EdgeShape();
-		edgeShape2.set(w,0,w,h);
-		fixtureDef4.shape = edgeShape2;
-		bodyEdgeScreen = world.createBody(bodyDef4);
-		bodyEdgeScreen.createFixture(fixtureDef4);
-
-		edgeShape2.dispose();
-		edgeShape.dispose();
+		//edgeShape2.dispose();
+		//edgeShape.dispose();
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.
 				getHeight());
 		stage.getViewport().setCamera(camera);
@@ -129,12 +129,12 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		//batch.setProjectionMatrix(camera.combined);
 
-		tiledMapRenderer.setView(camera);
-		tiledMapRenderer.render();
+		tiledMap.render();
 
 		batch.begin();
 		stage.draw();
 		batch.end();
+
 
 
 		Vector3 position = camera.position;
@@ -273,4 +273,7 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 		return camera;
 	}
 
+	public World getWorld() {
+		return this.world;
+	}
 }
