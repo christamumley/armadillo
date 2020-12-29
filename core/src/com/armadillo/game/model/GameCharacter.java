@@ -3,6 +3,7 @@ package com.armadillo.game.model;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -53,7 +54,7 @@ public class GameCharacter extends Group {
    * @param hp health points of the Character, cannot be less than or equal to zero.
    * @param weapon the Character's weapon. Can be null if the Character has no weapon.
    */
-  public GameCharacter(World world, int hp, Texture texture, Weapon weapon) {
+  public GameCharacter(World world, int hp, Texture texture, Weapon weapon, Vector2 spawn) {
 
     Objects.requireNonNull(texture);
     this.texture = texture;
@@ -61,8 +62,8 @@ public class GameCharacter extends Group {
     Objects.requireNonNull(weapon);
     this.weapon = weapon;
 
-    this.setX(400);
-    this.setY(700);
+    this.setX(spawn.x);
+    this.setY(spawn.y);
 
     setBounds(getX(),getY(),texture.getWidth(),texture.getHeight());
 
@@ -181,6 +182,14 @@ public class GameCharacter extends Group {
     return this.body;
   }
 
+
+  /**
+   * Applies an upward force to the Body of the game character
+   * iff the character is colliding with the ground object.
+   */
+  public void jump() {
+
+  }
 
   //inits the Physics simulation
   private void initBody(World world) {

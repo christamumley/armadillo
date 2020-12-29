@@ -77,7 +77,7 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 //		stage.addActor(actor1);
 
 		Weapon gunw = new Weapon(gun);
-		arma = new GameCharacter(world, 100, armatext, gunw);
+		arma = new GameCharacter(world, 100, armatext, gunw, tiledMap.getPlayerPoint(0));
 		arma.setDebug(true);
 		stage.addActor(arma);
 
@@ -161,7 +161,8 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 
 		//TODO: put movement feature inside of Character class
 		if(keycode == Keys.UP) {
-			arma.getBody().applyForceToCenter(0f,100f,true);
+			float y = arma.getY();
+			arma.getBody().applyLinearImpulse(new Vector2(0, 3f), arma.getBody().getWorldCenter(), true);
 		}
 		if(keycode == Keys.LEFT) {
 			arma.getBody().applyForceToCenter(-50f,0,true);
@@ -169,6 +170,10 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 		if(keycode == Keys.RIGHT) {
 			arma.getBody().applyForceToCenter(50f,0,true);
 		}
+		if(keycode == Keys.DOWN) {
+			arma.getBody().applyLinearImpulse(new Vector2(0, -10f), arma.getBody().getWorldCenter(), true);
+		}
+
 
 		return false;
 	}
