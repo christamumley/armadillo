@@ -6,11 +6,15 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.utils.Array;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -78,14 +82,8 @@ public class GameCharacter extends Group {
     shape.setAsBox(this.getWidth()/2 / PIXELS_TO_METERS, this.getHeight()
         /2 / PIXELS_TO_METERS);
 
-    FixtureDef fixtureDef = new FixtureDef();
-    fixtureDef.shape = shape;
-    fixtureDef.density = .5f;
-    fixtureDef.restitution = .2f;
-    fixtureDef.filter.categoryBits = MaskBits.PHYSICS_ENTITY.mask;
-    fixtureDef.filter.maskBits = (short) (MaskBits.WORLD_ENTITY.mask | MaskBits.PHYSICS_ENTITY.mask);
+    this.setNormalFixture();
 
-    body.createFixture(fixtureDef);
 
     //init sprite
     this.baseSprite = new Sprite(texture);
@@ -188,6 +186,74 @@ public class GameCharacter extends Group {
    * iff the character is colliding with the ground object.
    */
   public void jump() {
+    //should only work if the character is touching the ground
+
+
+  }
+
+  /**
+   * Applies the action that is desired for the down key.
+   */
+  public void down() {
+
+    //should only work if the character is not touching the ground
+  }
+
+  /**
+   * Sets the idle physics body fixture
+   */
+  public void setNormalFixture() {
+
+    //clear fixtures
+    this.clearFixtures();
+
+    PolygonShape shape = new PolygonShape();
+    shape.setAsBox(this.getWidth()/2 / PIXELS_TO_METERS, this.getHeight()
+        /2 / PIXELS_TO_METERS);
+
+    FixtureDef fixtureDef = new FixtureDef();
+    fixtureDef.shape = shape;
+    fixtureDef.density = .5f;
+    fixtureDef.restitution = .2f;
+    fixtureDef.filter.categoryBits = MaskBits.PHYSICS_ENTITY.mask;
+    fixtureDef.filter.maskBits = (short) (MaskBits.WORLD_ENTITY.mask | MaskBits.PHYSICS_ENTITY.mask);
+
+    body.createFixture(fixtureDef);
+    body.setTransform(body.getPosition(), 0);
+    body.setFixedRotation(true);
+  }
+
+  /**
+   * Sets the physics body fixture for the downward motion
+   */
+  public void setDownwardFixture() {
+    Vector2 center = body.getLocalCenter();
+    this.clearFixtures();
+
+    CircleShape shape = new CircleShape();
+    shape.setRadius(this.getHeight()/(PIXELS_TO_METERS * 2));
+    shape.setPosition(center);
+
+    FixtureDef fixtureDef = new FixtureDef();
+    fixtureDef.shape = shape;
+    fixtureDef.density = .5f;
+    fixtureDef.restitution = .2f;
+    fixtureDef.filter.categoryBits = MaskBits.PHYSICS_ENTITY.mask;
+    fixtureDef.filter.maskBits = (short) (MaskBits.WORLD_ENTITY.mask | MaskBits.PHYSICS_ENTITY.mask);
+
+    body.createFixture(fixtureDef);
+    body.setFixedRotation(false);
+
+  }
+
+  public void clearFixtures() {
+
+    Array<Fixture> fixtureDefs = body.getFixtureList();
+    if(fixtureDefs.size > 0) {
+      for(Fixture f: fixtureDefs) {
+        body.destroyFixture(f);
+      }
+    }
 
   }
 

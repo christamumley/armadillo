@@ -19,6 +19,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
@@ -28,6 +29,9 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	SpriteBatch batch;
 	Stage stage;
 	GameCharacter arma;
+
+	Box2DDebugRenderer debugRenderer;
+	Matrix4 debugMatrix;
 
 	//have the textures init internally
 	//Texture img;
@@ -119,6 +123,15 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 		camera = new OrthographicCamera(Gdx.graphics.getWidth(),Gdx.graphics.
 				getHeight());
 		stage.getViewport().setCamera(camera);
+
+		//Create a copy of camera projection matrix
+
+
+//BoxObjectManager.BOX_TO_WORLD = 100f
+//Scale it by 100 as our box physics bodies are scaled down by 100
+
+
+		debugRenderer=new Box2DDebugRenderer();
 	}
 	@Override
 	public void render() {
@@ -129,18 +142,22 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		//batch.setProjectionMatrix(camera.combined);
 
+		debugMatrix=new Matrix4(camera.combined);
+		debugMatrix.scale(100f, 100f, 1f);
+
+
 		tiledMap.render();
 
 		batch.begin();
 		stage.draw();
+		debugRenderer.render(this.world, debugMatrix);
 		batch.end();
-
-
 
 		Vector3 position = camera.position;
 		position.x += (arma.getX() + (arma.getWidth()/2) - position.x);
 		position.y += (arma.getY() + (arma.getHeight()/2) - position.y);
 		camera.update();
+
 
 	}
 	@Override
@@ -171,7 +188,8 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 			arma.getBody().applyForceToCenter(50f,0,true);
 		}
 		if(keycode == Keys.DOWN) {
-			arma.getBody().applyLinearImpulse(new Vector2(0, -10f), arma.getBody().getWorldCenter(), true);
+			arma.setDownwardFixture();
+			arma.getBody().applyLinearImpulse(new Vector2(0, -4f), arma.getBody().getWorldCenter(), true);
 		}
 
 
@@ -187,6 +205,9 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	@Override
 	public boolean keyUp(int keycode) {
 
+		if(keycode == Keys.DOWN) {
+			arma.setNormalFixture();
+		}
 		return true;
 	}
 
