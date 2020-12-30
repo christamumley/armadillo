@@ -11,10 +11,8 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -50,6 +48,9 @@ public class GameCharacter extends Group {
   //Weapon used by the character
   private Weapon weapon;
 
+  //true iff the Character is touching the ground;
+  private boolean ground;
+
   //intializes the base Character
   //private Actor base;
 
@@ -78,11 +79,7 @@ public class GameCharacter extends Group {
         (this.getY() + this.getHeight()/2) / PIXELS_TO_METERS);
     this.body = world.createBody(bodyDef);
 
-    PolygonShape shape = new PolygonShape();
-    shape.setAsBox(this.getWidth()/2 / PIXELS_TO_METERS, this.getHeight()
-        /2 / PIXELS_TO_METERS);
-
-    this.setNormalFixture();
+    this.setDefaultFixture();
 
 
     //init sprite
@@ -90,7 +87,7 @@ public class GameCharacter extends Group {
     this.baseSprite.setX(this.getX());
     this.baseSprite.setY(this.getY());
 
-    shape.dispose();
+    this.ground = true;
   }
 
   @Override
@@ -180,29 +177,10 @@ public class GameCharacter extends Group {
     return this.body;
   }
 
-
-  /**
-   * Applies an upward force to the Body of the game character
-   * iff the character is colliding with the ground object.
-   */
-  public void jump() {
-    //should only work if the character is touching the ground
-
-
-  }
-
-  /**
-   * Applies the action that is desired for the down key.
-   */
-  public void down() {
-
-    //should only work if the character is not touching the ground
-  }
-
   /**
    * Sets the idle physics body fixture
    */
-  public void setNormalFixture() {
+  public void setDefaultFixture() {
 
     //clear fixtures
     this.clearFixtures();
@@ -221,6 +199,26 @@ public class GameCharacter extends Group {
     body.createFixture(fixtureDef);
     body.setTransform(body.getPosition(), 0);
     body.setFixedRotation(true);
+
+    shape.dispose();
+  }
+
+  /**
+   * Sets the Ground field to the given ground state.  If true, the
+   * Character is able to Jump.
+   *
+   * @param groundState is the character is touching the ground?
+   */
+  public void setGround(boolean groundState) {
+    this.ground = groundState;
+  }
+
+  /**
+   * Gets the current state if the Character is touching the ground.
+   * @return true if the character is touching the ground.
+   */
+  public boolean getGround() {
+    return this.ground;
   }
 
   /**
@@ -244,9 +242,13 @@ public class GameCharacter extends Group {
     body.createFixture(fixtureDef);
     body.setFixedRotation(false);
 
+    shape.dispose();
   }
 
-  public void clearFixtures() {
+  /**
+   * Clears the shape data from the box2d body.
+   */
+  private void clearFixtures() {
 
     Array<Fixture> fixtureDefs = body.getFixtureList();
     if(fixtureDefs.size > 0) {
@@ -256,30 +258,4 @@ public class GameCharacter extends Group {
     }
 
   }
-
-  //inits the Physics simulation
-  private void initBody(World world) {
-    BodyDef bodyDef = new BodyDef();
-    bodyDef.type = BodyDef.BodyType.DynamicBody;
-    bodyDef.position.set((this.getX() + this.getWidth()/2) /
-            PIXELS_TO_METERS,
-        (this.getY() + this.getHeight()/2) / PIXELS_TO_METERS);
-    this.body = world.createBody(bodyDef);
-
-    PolygonShape shape = new PolygonShape();
-    shape.setAsBox(this.getWidth()/2 / PIXELS_TO_METERS, this.getHeight()
-        /2 / PIXELS_TO_METERS);
-
-    FixtureDef fixtureDef = new FixtureDef();
-    fixtureDef.shape = shape;
-    fixtureDef.density = .5f;
-    fixtureDef.restitution = .2f;
-    fixtureDef.filter.categoryBits = MaskBits.PHYSICS_ENTITY.mask;
-    fixtureDef.filter.maskBits = (short) (MaskBits.WORLD_ENTITY.mask | MaskBits.PHYSICS_ENTITY.mask);
-
-    body.createFixture(fixtureDef);
-
-    shape.dispose();
-  }
-
 }

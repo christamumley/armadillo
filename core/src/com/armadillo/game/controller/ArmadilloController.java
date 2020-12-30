@@ -1,8 +1,9 @@
 package com.armadillo.game.controller;
 
+import com.armadillo.game.controller.Actions.Jump;
 import com.armadillo.game.model.GameCharacter;
 import com.armadillo.game.model.GameMap;
-import com.armadillo.game.model.MyActor;
+import com.armadillo.game.model.JumpContact;
 import com.armadillo.game.model.Weapon;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -15,10 +16,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -83,6 +81,9 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 		Weapon gunw = new Weapon(gun);
 		arma = new GameCharacter(world, 100, armatext, gunw, tiledMap.getPlayerPoint(0));
 		arma.setDebug(true);
+
+		world.setContactListener(new JumpContact(arma));
+
 		stage.addActor(arma);
 
 //		actor2 = new MyActor(world, img, 300, 600);
@@ -137,6 +138,7 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	public void render() {
 		// Step the physics simulation forward at a rate of 60hz
 		world.step(1f/60f, 6, 2);
+		stage.act();
 
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -178,8 +180,7 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 
 		//TODO: put movement feature inside of Character class
 		if(keycode == Keys.UP) {
-			float y = arma.getY();
-			arma.getBody().applyLinearImpulse(new Vector2(0, 3f), arma.getBody().getWorldCenter(), true);
+			arma.addAction(new Jump());
 		}
 		if(keycode == Keys.LEFT) {
 			arma.getBody().applyForceToCenter(-50f,0,true);
@@ -206,7 +207,7 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	public boolean keyUp(int keycode) {
 
 		if(keycode == Keys.DOWN) {
-			arma.setNormalFixture();
+			arma.setDefaultFixture();
 		}
 		return true;
 	}
