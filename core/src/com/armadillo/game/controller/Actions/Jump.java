@@ -23,7 +23,7 @@ public class Jump extends Action {
 
       GameCharacter gc = ((GameCharacter) this.actor);
 
-      if(gc.getGround() == true) {
+      if(gc.getGround()) {
         Body body = gc.getBody();
         body.applyLinearImpulse(new Vector2(0, 3f), body.getWorldCenter(), true);
       }
