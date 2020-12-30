@@ -1,7 +1,8 @@
 package com.armadillo.game.controller;
 
+import com.armadillo.game.controller.Actions.Curl;
 import com.armadillo.game.controller.Actions.Jump;
-import com.armadillo.game.model.GameCharacter;
+import com.armadillo.game.model.MainCharacter;
 import com.armadillo.game.model.GameMap;
 import com.armadillo.game.model.JumpContact;
 import com.armadillo.game.model.Weapon;
@@ -26,7 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 public class ArmadilloController extends ApplicationAdapter implements InputProcessor {
 	SpriteBatch batch;
 	Stage stage;
-	GameCharacter arma;
+	MainCharacter arma;
 
 	Box2DDebugRenderer debugRenderer;
 	Matrix4 debugMatrix;
@@ -55,7 +56,7 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
  		camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.update();
 
-		tiledMap = new GameMap("tilemaps/testmap.tmx", this);
+		tiledMap = new GameMap("tilemaps/testmap2.tmx", this);
 
 		AssetManager manager = new AssetManager();
 		manager.load("badlogic.jpg", Texture.class);
@@ -79,7 +80,7 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 //		stage.addActor(actor1);
 
 		Weapon gunw = new Weapon(gun);
-		arma = new GameCharacter(world, 100, armatext, gunw, tiledMap.getPlayerPoint(0));
+		arma = new MainCharacter(world, 100, armatext, gunw, tiledMap.getPlayerPoint(0));
 		arma.setDebug(true);
 
 		world.setContactListener(new JumpContact(arma));
@@ -189,8 +190,7 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 			arma.getBody().applyForceToCenter(50f,0,true);
 		}
 		if(keycode == Keys.DOWN) {
-			arma.setDownwardFixture();
-			arma.getBody().applyLinearImpulse(new Vector2(0, -4f), arma.getBody().getWorldCenter(), true);
+			arma.addAction(new Curl());
 		}
 
 

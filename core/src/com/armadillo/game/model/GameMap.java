@@ -82,7 +82,7 @@ public class GameMap {
           } else if (object.getName().equals("start")) {
             Rectangle rectangle = ((RectangleMapObject) object).getRectangle();
             playerPoints.add(new Vector2(rectangle.x, rectangle.y));
-            break;
+            continue;
           }
         } else {
           break;

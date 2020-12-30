@@ -31,28 +31,25 @@ import java.util.Objects;
  * the group.
  * </p>
  */
-public class GameCharacter extends Group {
+public abstract class GameCharacter extends Group {
 
-  //TODO: manage constants
   final float PIXELS_TO_METERS = 100f;
 
   //the Box2d physics simulation object
-  Body body;
+  protected Body body;
   //Internal sprite for image management
-  Sprite baseSprite;
-  Texture texture;
+  protected Sprite baseSprite;
+  protected Texture texture;
 
   //health points for this character
-  private int hp;
+  protected int hp;
 
   //Weapon used by the character
-  private Weapon weapon;
+  protected Weapon weapon;
+  protected boolean isWeaponHidden;
 
   //true iff the Character is touching the ground;
-  private boolean ground;
-
-  //intializes the base Character
-  //private Actor base;
+  protected boolean ground;
 
   /**
    * Creates the Character Object. Can only be accessed with the Character Builder class
@@ -66,6 +63,7 @@ public class GameCharacter extends Group {
 
     Objects.requireNonNull(weapon);
     this.weapon = weapon;
+    isWeaponHidden = false;
 
     this.setX(spawn.x);
     this.setY(spawn.y);
@@ -81,6 +79,7 @@ public class GameCharacter extends Group {
 
     this.setDefaultFixture();
 
+    this.setDefaultFixture();
 
     //init sprite
     this.baseSprite = new Sprite(texture);
@@ -92,6 +91,7 @@ public class GameCharacter extends Group {
 
   @Override
   public void draw(Batch batch, float alpha){
+
     float x = (body.getPosition().x * PIXELS_TO_METERS) - this.getWidth()/2;
     float y = (body.getPosition().y * PIXELS_TO_METERS) - this.getHeight()/2;
     float angle = (float)Math.toDegrees(body.getAngle());
@@ -104,16 +104,19 @@ public class GameCharacter extends Group {
 
     this.setOrigin(baseSprite.getOriginX(), baseSprite.getOriginY());
 
-    //setting the weapon to the center of the Base
-    float weaponY = this.getY() + (this.getHeight()/2);
-    float weaponX = this.getX() + (this.getWidth()/2);
-    this.weapon.setPosition(weaponX, weaponY);
-    this.weapon.setRotation(angle);
-    this.weapon.setOrigin(baseSprite.getOriginX(), baseSprite.getOriginY());
+
 
     //drawing the base and the weapons
     this.baseSprite.draw(batch, alpha);
-    this.weapon.draw(batch, alpha);
+    if(!isWeaponHidden) {
+      //setting the weapon to the center of the Base
+      float weaponY = this.getY() + this.getHeight()/2;
+      float weaponX = this.getX() + this.getWidth()/2;
+      this.weapon.setPosition(weaponX, weaponY);
+      this.weapon.setRotation(angle);
+      this.weapon.setOrigin(this.baseSprite.getOriginX(), this.baseSprite.getOriginY());
+      this.weapon.draw(batch, alpha);
+    }
   }
 
   /**
@@ -138,6 +141,20 @@ public class GameCharacter extends Group {
   }
 
   /**
+   * Hides the Character's weapon.
+   */
+  public void hideWeapon() {
+    this.isWeaponHidden = true;
+  }
+
+  /**
+   * Shows the Character's weapon.
+   */
+  public void showWeapon() {
+    this.isWeaponHidden = false;
+  }
+
+  /**
    * Returns the Weapon of the Character.
    * @param weapon the Character's Weapon.
    */
@@ -146,27 +163,19 @@ public class GameCharacter extends Group {
   }
 
   /**
-   * Subtracts the damage from the Character's health points.
-   * @param damage the int damage taken by the character.
-   * @return the remaining hp of the character.
-   */
-  public int takeDamage(int damage) {
-
-    if((this.hp - damage) <= 0) {
-      this.hp = 0;
-      return 0;
-    }
-
-    this.hp -= damage;
-    return  this.hp;
-  }
-
-  /**
    * Retrieves the Character's health points.
    * @return int representing Character hp
    */
   public int getHp() {
     return this.hp;
+  }
+
+  /**
+   * Sets the Character's health points.
+   * @param hp the desired hp
+   */
+  public void setHp(int hp) {
+    this.hp = hp;
   }
 
   /**
@@ -180,28 +189,12 @@ public class GameCharacter extends Group {
   /**
    * Sets the idle physics body fixture
    */
-  public void setDefaultFixture() {
+  public abstract void setDefaultFixture();
 
-    //clear fixtures
-    this.clearFixtures();
-
-    PolygonShape shape = new PolygonShape();
-    shape.setAsBox(this.getWidth()/2 / PIXELS_TO_METERS, this.getHeight()
-        /2 / PIXELS_TO_METERS);
-
-    FixtureDef fixtureDef = new FixtureDef();
-    fixtureDef.shape = shape;
-    fixtureDef.density = .5f;
-    fixtureDef.restitution = .2f;
-    fixtureDef.filter.categoryBits = MaskBits.PHYSICS_ENTITY.mask;
-    fixtureDef.filter.maskBits = (short) (MaskBits.WORLD_ENTITY.mask | MaskBits.PHYSICS_ENTITY.mask);
-
-    body.createFixture(fixtureDef);
-    body.setTransform(body.getPosition(), 0);
-    body.setFixedRotation(true);
-
-    shape.dispose();
-  }
+  /**
+   * Sets the physics body fixture for the downward motion
+   */
+  public abstract void setAlternateFixture();
 
   /**
    * Sets the Ground field to the given ground state.  If true, the
@@ -222,40 +215,14 @@ public class GameCharacter extends Group {
   }
 
   /**
-   * Sets the physics body fixture for the downward motion
-   */
-  public void setDownwardFixture() {
-    Vector2 center = body.getLocalCenter();
-    this.clearFixtures();
-
-    CircleShape shape = new CircleShape();
-    shape.setRadius(this.getHeight()/(PIXELS_TO_METERS * 2));
-    shape.setPosition(center);
-
-    FixtureDef fixtureDef = new FixtureDef();
-    fixtureDef.shape = shape;
-    fixtureDef.density = .5f;
-    fixtureDef.restitution = .2f;
-    fixtureDef.filter.categoryBits = MaskBits.PHYSICS_ENTITY.mask;
-    fixtureDef.filter.maskBits = (short) (MaskBits.WORLD_ENTITY.mask | MaskBits.PHYSICS_ENTITY.mask);
-
-    body.createFixture(fixtureDef);
-    body.setFixedRotation(false);
-
-    shape.dispose();
-  }
-
-  /**
    * Clears the shape data from the box2d body.
    */
   private void clearFixtures() {
-
     Array<Fixture> fixtureDefs = body.getFixtureList();
     if(fixtureDefs.size > 0) {
       for(Fixture f: fixtureDefs) {
         body.destroyFixture(f);
       }
     }
-
   }
 }

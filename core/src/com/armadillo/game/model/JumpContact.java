@@ -16,10 +16,11 @@ import java.util.Objects;
  */
 public class JumpContact implements ContactListener {
 
-  GameCharacter player;
+  MainCharacter player;
   boolean playerContact;
+  static int numContacts = 0;
 
-  public JumpContact(GameCharacter player) {
+  public JumpContact(MainCharacter player) {
     Objects.requireNonNull(player);
     this.player = player;
     this.playerContact = false;
@@ -37,11 +38,13 @@ public class JumpContact implements ContactListener {
       if(contact.getFixtureB().getBody().getType() == BodyType.StaticBody){
         this.playerContact = true;
         this.player.setGround(true);
+        numContacts++;
       }
     } else if(contact.getFixtureB() == this.player.getBody().getFixtureList().get(0)) {
       if(contact.getFixtureA().getBody().getType() == BodyType.StaticBody){
         this.playerContact = true;
         this.player.setGround(true);
+        numContacts++;
       }
     } else {
       this.playerContact = false;
@@ -56,7 +59,10 @@ public class JumpContact implements ContactListener {
   @Override
   public void endContact(Contact contact) {
     if(playerContact == true) {
-     player.setGround(false);
+     numContacts--;
+     if(numContacts <= 0) {
+       this.player.setGround(false);
+     }
     }
   }
 

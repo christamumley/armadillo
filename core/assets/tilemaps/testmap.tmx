@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="51">
+<map version="1.4" tiledversion="1.4.3" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="64">
  <tileset firstgid="1" source="bluehills_bcsilva.tsx"/>
  <layer id="1" name="Tile Layer 1" width="32" height="32">
   <data encoding="base64" compression="zlib">
-   eJztzrsNwjAURuG4gIaahucKQMUCoYEJAMEIvHbgESaABhagggXYjHOlpIksyyBwJHR/6ZMlFz6OIp1Op9Pp/nNb7LDHAQmOgdonnHHPueAaoH+ztDMPGA8llC1vV9A07v7T0RdVTzXU0ZAmWmij6+j3jbv9Tj/TkSZ6qZjGwPKHIXejH/Tz5I0xnQmm6T9mnHOP9rf6YkFviRXW2ATuf0r72td+MW3tF99/AbrMxTs=
+   eJztzjsOAVEUh/G5BY1a47kFVDoVDStAWILXHsZrBTRsQMUG7Mx3kplmcnNzCXcSOf/kl0mmuN+JIp1Op9Pp/nMxtthhjwOOAbo9nHDGPeOCa4AbbpZ26gHjoYCi5e0S6sbdfzr6ouypgipq0kQDTbQd/a5xt9/pp1rSRCfRpzGw3DDk3+gH/Sx5Y0xngmlyx4zv3KP9rb5Y0FtihTU2gfuf0r72tZ9PW/v591/bRsV6
   </data>
  </layer>
  <objectgroup id="2" name="ground">
@@ -17,23 +17,11 @@
   <object id="33" x="475.5" y="550">
    <polygon points="0,0 36,-25 42,1.5 64.5,42.5 78.5,54 4,58"/>
   </object>
-  <object id="36" x="554" y="604">
-   <polygon points="0,0 30,22 62.5,32.5 89,36.5 88,77 -13.5,69.5"/>
-  </object>
-  <object id="37" x="554" y="604">
-   <polygon points="0,0 30,22 62.5,32.5 89,36.5 88,77 -13.5,69.5"/>
-  </object>
-  <object id="39" x="642.5" y="640">
-   <polygon points="0,0 28,-2 64,-14.5 94.5,-43.5 110,-70 108,28.5 0,30.5"/>
-  </object>
   <object id="42" x="480" y="610">
    <polygon points="0,0 71.5,-4 58.5,62"/>
   </object>
   <object id="43" x="480" y="610">
    <polygon points="0,0 71.5,-4 58.5,62"/>
-  </object>
-  <object id="44" x="752" y="570">
-   <polygon points="0,0 16.5,-34.5 23,-61.5 36,-91 48.5,-106.5 51.5,54 0.5,63.5"/>
   </object>
   <object id="45" x="800.5" y="464">
    <polygon points="0,0 19.5,-23 59,-40.5 96.5,-44 87,97 2,99"/>
@@ -46,6 +34,33 @@
   </object>
   <object id="50" name="start" x="16" y="501.5">
    <point/>
+  </object>
+  <object id="51" x="556.667" y="607.333">
+   <polygon points="0,0 28.6667,19.3333 22.6667,64 -16,63.3333"/>
+  </object>
+  <object id="52" x="587.333" y="630">
+   <polygon points="0,0 26.6667,7.33333 25.3333,40.6667 -5.33333,40"/>
+  </object>
+  <object id="53" x="617.333" y="638.667">
+   <polygon points="0,0 26.6667,2.66667 27.3333,32 -3.33333,33.3333"/>
+  </object>
+  <object id="54" x="644.667" y="640">
+   <polygon points="0,0 34.6667,-3.33333 38,29.3333 2.66667,32.6667"/>
+  </object>
+  <object id="55" x="679.333" y="637.333">
+   <polygon points="0,0 35.3333,-16 40.6667,28 3.33333,36.6667"/>
+  </object>
+  <object id="56" x="714" y="622">
+   <polygon points="0,0 26,-26.6667 32.6667,24 7.33333,33.3333"/>
+  </object>
+  <object id="57" x="740" y="595.333">
+   <polygon points="0,0 24.6667,-50.6667 22.6667,20 9.33333,24.6667"/>
+  </object>
+  <object id="59" x="764" y="544.667">
+   <polygon points="0,0 14,-44.6667 17.3333,30 1.33333,44.6667"/>
+  </object>
+  <object id="60" x="780" y="501.333">
+   <polygon points="0,0 19.3333,-38 22,61.3333 3.33333,74"/>
   </object>
  </objectgroup>
 </map>
