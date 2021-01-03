@@ -1,7 +1,9 @@
 package com.armadillo.game.controller;
 
+import com.armadillo.game.controller.Actions.Aim;
 import com.armadillo.game.controller.Actions.Curl;
 import com.armadillo.game.controller.Actions.Jump;
+import com.armadillo.game.controller.Actions.HorizontalMotion;
 import com.armadillo.game.model.MainCharacter;
 import com.armadillo.game.model.GameMap;
 import com.armadillo.game.model.JumpContact;
@@ -12,17 +14,21 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.Viewport;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ArmadilloController extends ApplicationAdapter implements InputProcessor {
 	SpriteBatch batch;
@@ -32,23 +38,22 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	Box2DDebugRenderer debugRenderer;
 	Matrix4 debugMatrix;
 
+	List<Action> left = new ArrayList<>();
+	List<Action> right = new ArrayList<>();
+
 	//have the textures init internally
 	//Texture img;
 	World world;
 	Body bodyEdgeScreen;
 	OrthographicCamera camera;
-	final float PIXELS_TO_METERS = 100f;
-	final short PHYSICS_ENTITY = 0x1;    // 0001
-	final short WORLD_ENTITY = 0x1 << 1; // 0010 or 0x2 in hex
-	long starttime;
-	Texture img;
 	GameMap tiledMap;
-	TiledMapRenderer tiledMapRenderer;
 
 
 	@Override
 	public void create() {
 		Gdx.input.setInputProcessor(this);
+
+
 
 		world = new World(new Vector2(0, -9f),true);
 
@@ -70,14 +75,6 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 
 		stage = new Stage();
 		batch = new SpriteBatch();
-		//img = new Texture("badlogic.jpg");
-		//Texture gun = new Texture("gun.png");
-
-		// Create two identical sprites slightly offset from each other vertically
-//		actor1 = new MyActor(world, img, 47, 100);
-//		actor1.setVisible(true);
-//		actor1.setDebug(true);
-//		stage.addActor(actor1);
 
 		Weapon gunw = new Weapon(gun);
 		arma = new MainCharacter(world, 100, armatext, gunw, tiledMap.getPlayerPoint(0));
@@ -151,6 +148,8 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 
 		tiledMap.render();
 
+		batch.setTransformMatrix(this.getCamera().view);
+		batch.setProjectionMatrix(this.getCamera().projection);
 		batch.begin();
 		stage.draw();
 		debugRenderer.render(this.world, debugMatrix);
@@ -170,6 +169,14 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 		world.dispose();
 	}
 
+
+	@Override
+	public void resize(int width, int height) {
+		stage.getViewport().update(width, height);
+		camera.update();
+	}
+
+
 	/**
 	 * Called when a key was pressed
 	 *
@@ -179,22 +186,28 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	@Override
 	public boolean keyDown(int keycode) {
 
-		//TODO: put movement feature inside of Character class
-		if(keycode == Keys.UP) {
+		if(keycode == Keys.UP || keycode == Keys.W) {
 			arma.addAction(new Jump());
 		}
-		if(keycode == Keys.LEFT) {
-			arma.getBody().applyForceToCenter(-50f,0,true);
+		if(keycode == Keys.LEFT || keycode == Keys.A) {
+			Action a = new HorizontalMotion(true, false);
+			left.add(a);
+			arma.addAction(a);
 		}
-		if(keycode == Keys.RIGHT) {
-			arma.getBody().applyForceToCenter(50f,0,true);
+		if(keycode == Keys.RIGHT || keycode == Keys.D) {
+			Action a = new HorizontalMotion(true, true);
+			right.add(a);
+			arma.addAction(a);
 		}
-		if(keycode == Keys.DOWN) {
+		if(keycode == Keys.DOWN || keycode == Keys.S) {
 			arma.addAction(new Curl());
 		}
 
+		if(keycode == Keys.SHIFT_LEFT) {
+			arma.addAction(new Aim(90));
+		}
 
-		return false;
+		return true;
 	}
 
 	/**
@@ -206,7 +219,21 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	@Override
 	public boolean keyUp(int keycode) {
 
-		if(keycode == Keys.DOWN) {
+		if(keycode == Keys.LEFT || keycode == Keys.A) {
+			for(Action a : left) {
+				arma.removeAction(a);
+			}
+		}
+
+		if(keycode == Keys.RIGHT || keycode == Keys.D) {
+			for(Action a : right) {
+				arma.removeAction(a);
+			}
+		}
+
+
+
+		if(keycode == Keys.DOWN || keycode == Keys.S) {
 			arma.setDefaultFixture();
 		}
 		return true;
@@ -275,7 +302,14 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	 */
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		return false;
+		Vector2 s = stage.screenToStageCoordinates(new Vector2(screenX, screenY));
+		float deltax = s.x - arma.getWeapon().getX();
+		float deltay = s.y - arma.getWeapon().getY();
+		float m = deltay/deltax;
+		float angle = (float)Math.toDegrees(Math.atan2(deltay, deltax));
+		arma.getWeapon().face((int)angle, arma.isRight());
+		System.out.println(arma.getWeapon().getRotation());
+		return true;
 	}
 
 	/**

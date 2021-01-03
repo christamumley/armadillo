@@ -12,7 +12,6 @@ public class Curl extends Action {
 
   /**
    * Updates the action based on time. Typically this is called each frame by {@link
-
    *
    * @param delta Time in seconds since the last frame.
    * @return true if the action is done. This method may continue to be called after the action is
@@ -25,9 +24,9 @@ public class Curl extends Action {
       MainCharacter gc = ((MainCharacter) this.actor);
 
       //will only apply the impluse of the character is touching the ground.
+      Body body = gc.getBody();
       if(!gc.getGround()) {
-        Body body = gc.getBody();
-        body.applyLinearImpulse(new Vector2(0, -4f), body.getWorldCenter(), true);
+        body.applyLinearImpulse(new Vector2(0, -1f), body.getWorldCenter(), true);
       }
 
       gc.setAlternateFixture();

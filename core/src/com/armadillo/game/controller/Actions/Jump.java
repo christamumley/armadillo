@@ -1,5 +1,6 @@
 package com.armadillo.game.controller.Actions;
 
+import com.armadillo.game.model.GameCharacter;
 import com.armadillo.game.model.MainCharacter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -19,14 +20,21 @@ public class Jump extends Action {
    */
   @Override
   public boolean act(float delta) {
-    if(this.actor instanceof MainCharacter) {
+    //if general game character
+    if (this.actor instanceof MainCharacter) {
 
       MainCharacter gc = ((MainCharacter) this.actor);
 
-      //will only apply the impluse of the character is touching the ground.
       if(gc.getGround() && !gc.getCurled()) {
         Body body = gc.getBody();
-        body.applyLinearImpulse(new Vector2(0, 3f), body.getWorldCenter(), true);
+        body.applyLinearImpulse(new Vector2(0, .3f), body.getWorldCenter(), true);
+      }
+    } else if(this.actor instanceof GameCharacter) {
+      GameCharacter gc = ((GameCharacter) this.actor);
+      //will only apply the impluse of the character is touching the ground.
+      if (gc.getGround()) {
+        Body body = gc.getBody();
+        body.applyLinearImpulse(new Vector2(0, .3f), body.getWorldCenter(), true);
       }
     }
     return true;

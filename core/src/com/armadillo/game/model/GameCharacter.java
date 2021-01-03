@@ -1,6 +1,8 @@
 package com.armadillo.game.model;
 
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -39,7 +41,9 @@ public abstract class GameCharacter extends Group {
   protected Body body;
   //Internal sprite for image management
   protected Sprite baseSprite;
-  protected Texture texture;
+  protected Texture texture_left;
+  protected Texture texture_right;
+  protected boolean isRight = true;
 
   //health points for this character
   protected int hp;
@@ -59,7 +63,11 @@ public abstract class GameCharacter extends Group {
   public GameCharacter(World world, int hp, Texture texture, Weapon weapon, Vector2 spawn) {
 
     Objects.requireNonNull(texture);
-    this.texture = texture;
+    this.texture_right = new Texture(resize(texture, 45, 45));
+    this.texture_left = new Texture(flip(resize(texture, 45, 45)));
+
+
+    weapon.resize(0.5f);
 
     Objects.requireNonNull(weapon);
     this.weapon = weapon;
@@ -68,7 +76,7 @@ public abstract class GameCharacter extends Group {
     this.setX(spawn.x);
     this.setY(spawn.y);
 
-    setBounds(getX(),getY(),texture.getWidth(),texture.getHeight());
+    setBounds(getX(),getY(),this.texture_right.getWidth(),this.texture_right.getHeight());
 
     BodyDef bodyDef = new BodyDef();
     bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -79,45 +87,14 @@ public abstract class GameCharacter extends Group {
 
     this.setDefaultFixture();
 
-    this.setDefaultFixture();
-
     //init sprite
-    this.baseSprite = new Sprite(texture);
+    this.baseSprite = new Sprite(this.texture_right);
     this.baseSprite.setX(this.getX());
     this.baseSprite.setY(this.getY());
 
     this.ground = true;
   }
 
-  @Override
-  public void draw(Batch batch, float alpha){
-
-    float x = (body.getPosition().x * PIXELS_TO_METERS) - this.getWidth()/2;
-    float y = (body.getPosition().y * PIXELS_TO_METERS) - this.getHeight()/2;
-    float angle = (float)Math.toDegrees(body.getAngle());
-
-    this.setPosition(this.baseSprite.getX(), this.baseSprite.getY());
-    this.baseSprite.setPosition(x, y);
-
-    this.setRotation(this.baseSprite.getRotation());
-    this.baseSprite.setRotation(angle);
-
-    this.setOrigin(baseSprite.getOriginX(), baseSprite.getOriginY());
-
-
-
-    //drawing the base and the weapons
-    this.baseSprite.draw(batch, alpha);
-    if(!isWeaponHidden) {
-      //setting the weapon to the center of the Base
-      float weaponY = this.getY() + this.getHeight()/2;
-      float weaponX = this.getX() + this.getWidth()/2;
-      this.weapon.setPosition(weaponX, weaponY);
-      this.weapon.setRotation(angle);
-      this.weapon.setOrigin(this.baseSprite.getOriginX(), this.baseSprite.getOriginY());
-      this.weapon.draw(batch, alpha);
-    }
-  }
 
   /**
    * Sets the weapon of the Character.
@@ -156,9 +133,8 @@ public abstract class GameCharacter extends Group {
 
   /**
    * Returns the Weapon of the Character.
-   * @param weapon the Character's Weapon.
    */
-  public Weapon getWeapon(Weapon weapon) {
+  public Weapon getWeapon() {
     return this.weapon;
   }
 
@@ -225,4 +201,71 @@ public abstract class GameCharacter extends Group {
       }
     }
   }
+
+  /**
+   * Flips the character to face right.
+   */
+  public void faceRight() {
+    if(this.baseSprite.getTexture() == this.texture_right) return;
+    this.baseSprite.setTexture(this.texture_right);
+    this.isRight = true;
+    this.weapon.face((int)weapon.getRotation(), true);
+  }
+
+  /**
+   * Flips the character to face left.
+   */
+  public void faceLeft() {
+    if(this.baseSprite.getTexture() == this.texture_left) return;
+    this.baseSprite.setTexture(this.texture_left);
+    this.isRight = false;
+    this.weapon.face((int)weapon.getRotation(), false);
+  }
+
+  /**
+   * gets direction of the character
+   * @return returns true if facing right
+   */
+  public boolean isRight() {
+    return isRight;
+  }
+
+
+  /**
+   * Takes the Pixmap from a texture and returns a resized version.
+   * Side effect: removes the Pixmap from the texture.
+   * @param t the given texture to be resized.
+   * @param w the new width of the texture
+   * @param h the new height of the texture
+   * @return the resized Pixmap
+   */
+  private Pixmap resize(Texture t, int w, int h) {
+    TextureData td = t.getTextureData();
+    td.prepare();
+    Pixmap p = td.consumePixmap();
+    Pixmap p2 = new Pixmap(w, h, p.getFormat());
+    p2.drawPixmap(p, 0, 0, p.getWidth(), p.getHeight(),
+        0, 0, w, h);
+    p.dispose();
+    return p2;
+  }
+
+  /**
+   * Flips the given Pixmap horizontally.
+   * @param p the given Pixmap.
+   * @return Horizontally flipped Pixmap.
+   */
+  private Pixmap flip(Pixmap p) {
+    int w = p.getWidth();
+    int h = p.getHeight();
+    Pixmap p2 = new Pixmap(w, h, p.getFormat());
+    for(int i =0; i < w; i++) {
+      for(int j = 0; j < h; j++) {
+       p2.drawPixel(i,j,p.getPixel(w-i, j));
+      }
+    }
+    p.dispose();
+    return p2;
+  }
+
 }
