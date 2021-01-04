@@ -3,15 +3,11 @@ package com.armadillo.game.model;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureData;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
@@ -86,6 +82,8 @@ public abstract class GameCharacter extends Group {
     this.body = world.createBody(bodyDef);
 
     this.setDefaultFixture();
+
+    System.out.println(String.format("bullet: x: %f, y: %f", this.body.getPosition().x, this.body.getPosition().y));
 
     //init sprite
     this.baseSprite = new Sprite(this.texture_right);

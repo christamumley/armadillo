@@ -5,7 +5,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a weapon that can be wielded by a Character.
@@ -16,6 +20,8 @@ public class Weapon extends Actor {
   private Sprite sprite;
   private Texture upsidedown_texture;
   private Texture texture;
+  private int damage = 10;
+  private List<Bullet> bulletList = new ArrayList<>();
 
   public Weapon(Texture texture) {
     this.sprite = new Sprite(texture);
@@ -45,12 +51,17 @@ public class Weapon extends Actor {
     this.sprite = new Sprite(t);
   }
 
+  /**
+   * Points the weapon in the given direction, with the texture drawn to the left or the right.
+   * @param angle the angle to point the weapon toward.
+   * @param isRight is the weapon supposed to be facing right?
+   */
   public void face(int angle, boolean isRight) {
     int pointAngle = 0;
     if(isRight) {
       this.sprite.setTexture(this.texture);
       if(angle < -90) {
-        pointAngle = angle + 180;
+        pointAngle = -180 - angle;
       } else if (angle > 90) {
         pointAngle = 180 - angle;
       } else {
@@ -58,7 +69,7 @@ public class Weapon extends Actor {
       }
     } else {
       this.sprite.setTexture(this.upsidedown_texture);
-      if (angle < 90 && angle > 0) {
+      if (angle < 90 && angle >= 0) {
         pointAngle = 180 - angle;
       } else if (angle > -90 && angle < 0 ) {
         pointAngle = -180 - angle;
@@ -68,6 +79,23 @@ public class Weapon extends Actor {
     }
     this.setRotation(pointAngle);
   }
+
+
+  /**
+   * Fires a Bullet in the direction of the weapon rotation.
+   * @param world the box2d World to append the bullet to
+   */
+  public void shoot(Vector2 place, World world) {
+    this.bulletList.add(new Bullet(this.damage, this.getX(), this.getY(),
+        this.getRotation(), world));
+    System.out.println(String.format("this.x: %f, this.y: %f ", this.getX()/100, this.getY()/100));
+  }
+
+  public List<Bullet> getBulletList() {
+    return this.bulletList;
+  }
+
+
 
   /**
    * Takes the Pixmap from a texture and returns a resized version.

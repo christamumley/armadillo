@@ -4,6 +4,8 @@ import com.armadillo.game.controller.Actions.Aim;
 import com.armadillo.game.controller.Actions.Curl;
 import com.armadillo.game.controller.Actions.Jump;
 import com.armadillo.game.controller.Actions.HorizontalMotion;
+import com.armadillo.game.model.Bullet;
+import com.armadillo.game.model.Enemy;
 import com.armadillo.game.model.MainCharacter;
 import com.armadillo.game.model.GameMap;
 import com.armadillo.game.model.JumpContact;
@@ -262,7 +264,9 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	 */
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		return false;
+		this.arma.getWeapon().shoot(arma.getBody().getPosition(), this.world);
+		System.out.println(String.format("arma: x: %f, y:5f",arma.getBody().getPosition().x, arma.getBody().getPosition().y));
+		return true;
 	}
 
 	/**
@@ -337,4 +341,23 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	public World getWorld() {
 		return this.world;
 	}
+
+	public List<Enemy> getEnemies() {
+		//TODO: get the list of enemies
+		return new ArrayList<>();
+	}
+
+	public MainCharacter getMainCharacter() {
+		return this.arma;
+	}
+
+	public List<Bullet> getEnemyBullets() {
+		//TODO:
+		return new ArrayList<>();
+	}
+
+	public List<Bullet> getMainCharacterBullets() {
+		return arma.getWeapon().getBulletList();
+	}
+
 }

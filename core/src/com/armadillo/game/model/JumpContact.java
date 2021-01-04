@@ -58,7 +58,7 @@ public class JumpContact implements ContactListener {
    */
   @Override
   public void endContact(Contact contact) {
-    if(playerContact == true) {
+    if(playerContact) {
      numContacts--;
      if(numContacts <= 0) {
        this.player.setGround(false);
