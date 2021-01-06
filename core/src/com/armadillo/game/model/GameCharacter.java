@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
@@ -51,6 +52,9 @@ public abstract class GameCharacter extends Group {
   //true iff the Character is touching the ground;
   protected boolean ground;
 
+  protected FixtureDef bodyFix;
+  protected FixtureDef footFix;
+
   /**
    * Creates the Character Object. Can only be accessed with the Character Builder class
    * @param hp health points of the Character, cannot be less than or equal to zero.
@@ -59,8 +63,8 @@ public abstract class GameCharacter extends Group {
   public GameCharacter(World world, int hp, Texture texture, Weapon weapon, Vector2 spawn) {
 
     Objects.requireNonNull(texture);
-    this.texture_right = new Texture(resize(texture, 45, 45));
-    this.texture_left = new Texture(flip(resize(texture, 45, 45)));
+    this.texture_right = new Texture(resize(texture, 50, 50));
+    this.texture_left = new Texture(flip(resize(texture, 50, 50)));
 
 
     weapon.resize(0.5f);
@@ -80,6 +84,9 @@ public abstract class GameCharacter extends Group {
             PIXELS_TO_METERS,
         (this.getY() + this.getHeight()/2) / PIXELS_TO_METERS);
     this.body = world.createBody(bodyDef);
+
+    this.footFix = new FixtureDef();
+    this.bodyFix = new FixtureDef();
 
     this.setDefaultFixture();
 

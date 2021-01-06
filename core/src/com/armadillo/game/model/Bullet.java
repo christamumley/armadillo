@@ -36,6 +36,9 @@ public class Bullet extends Actor {
 
     System.out.println(String.format("bullet: x: %f, y: %f", this.body.getPosition().x, this.body.getPosition().y));
 
+    float magnitude = (float)Math.sqrt(x*x + y*y);
+    Vector2 trajectory = new Vector2(x/magnitude, y/magnitude);
+    this.body.applyForceToCenter(trajectory, true);
 
   }
 
@@ -76,6 +79,7 @@ public class Bullet extends Actor {
     body.setFixedRotation(true);
 
     shape.dispose();
+
   }
 
 }

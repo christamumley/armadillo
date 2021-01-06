@@ -51,17 +51,35 @@ public class MainCharacter extends GameCharacter {
     };
     shape.set(points);
 
-    FixtureDef fixtureDef = new FixtureDef();
-    fixtureDef.shape = shape;
-    fixtureDef.density = .5f;
-    fixtureDef.restitution = .2f;
-    fixtureDef.filter.categoryBits = MaskBits.PHYSICS_ENTITY.mask;
-    fixtureDef.filter.maskBits = (short) (MaskBits.WORLD_ENTITY.mask | MaskBits.PHYSICS_ENTITY.mask);
-    fixtureDef.friction = 1F;
+    //TODO:Figure out mutliple fixtures per body
+//    shape = new PolygonShape();
+//    shape.setAsBox(this.getHeight()/(PIXELS_TO_METERS),
+//        this.getWidth()/(PIXELS_TO_METERS), new Vector2((this.getX())/PIXELS_TO_METERS,
+//            (this.getY())/PIXELS_TO_METERS),
+//        0);
+//
+//    footFix = new FixtureDef();
+//    footFix.shape = shape;
+//    footFix.density = .5f;
+//    footFix.restitution = .2f;
+//    footFix.filter.categoryBits = MaskBits.CHARACTER_ENTITY.mask;
+//    footFix.filter.maskBits = (short) (MaskBits.WORLD_ENTITY.mask | MaskBits.PHYSICS_ENTITY.mask);
+//    footFix.friction = 1F;
+//
+//    body.createFixture(footFix);
 
-    body.createFixture(fixtureDef);
+    this.bodyFix = new FixtureDef();
+    bodyFix.shape = shape;
+    bodyFix.density = .5f;
+    bodyFix.restitution = .2f;
+    bodyFix.filter.categoryBits = MaskBits.CHARACTER_ENTITY.mask;
+    bodyFix.filter.maskBits = (short) (MaskBits.WORLD_ENTITY.mask | MaskBits.PHYSICS_ENTITY.mask);
+    bodyFix.friction = 1F;
+
+    body.createFixture(bodyFix);
     body.setTransform(body.getPosition(), 0);
     body.setFixedRotation(true);
+
 
     shape.dispose();
     this.curled = false;
@@ -72,22 +90,25 @@ public class MainCharacter extends GameCharacter {
    * Sets the physics body fixture for the downward motion
    */
   public void setAlternateFixture() {
-    Vector2 center = body.getLocalCenter();
+    float centerx = body.getLocalCenter().x;
+    float centery = body.getLocalCenter().y;
+    Vector2 center = new Vector2(centerx, centery);
+
     this.clearFixtures();
 
     CircleShape shape = new CircleShape();
     shape.setRadius(this.getHeight()/(PIXELS_TO_METERS * 2));
     shape.setPosition(center);
 
-    FixtureDef fixtureDef = new FixtureDef();
-    fixtureDef.shape = shape;
-    fixtureDef.density = .5f;
-    fixtureDef.restitution = .2f;
-    fixtureDef.filter.categoryBits = MaskBits.PHYSICS_ENTITY.mask;
-    fixtureDef.filter.maskBits = (short) (MaskBits.WORLD_ENTITY.mask | MaskBits.PHYSICS_ENTITY.mask);
-    fixtureDef.friction = 1F;
+    bodyFix = new FixtureDef();
+    bodyFix.shape = shape;
+    bodyFix.density = .5f;
+    bodyFix.restitution = .2f;
+    bodyFix.filter.categoryBits = MaskBits.CHARACTER_ENTITY.mask;
+    bodyFix.filter.maskBits = (short) (MaskBits.WORLD_ENTITY.mask | MaskBits.PHYSICS_ENTITY.mask);
+    bodyFix.friction = 1F;
 
-    body.createFixture(fixtureDef);
+    body.createFixture(bodyFix);
     body.setFixedRotation(false);
 
     shape.dispose();
@@ -116,7 +137,6 @@ public class MainCharacter extends GameCharacter {
 
     this.setOrigin(baseSprite.getOriginX(), baseSprite.getOriginY());
 
-
     //drawing the base and the weapons
     this.baseSprite.draw(batch, alpha);
     if(!isWeaponHidden) {
@@ -131,12 +151,8 @@ public class MainCharacter extends GameCharacter {
    * Clears the shape data from the box2d body.
    */
   private void clearFixtures() {
-
-    Array<Fixture> fixtureDefs = body.getFixtureList();
-    if(fixtureDefs.size > 0) {
-      for(Fixture f: fixtureDefs) {
-        body.destroyFixture(f);
-      }
+    for (Fixture f: this.body.getFixtureList()) {
+      this.body.destroyFixture(f);
     }
   }
 
