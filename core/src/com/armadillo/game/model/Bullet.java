@@ -29,9 +29,12 @@ public class Bullet extends Actor {
 
     this.setDefaultFixture();
 
+    Vector2 trajectory = new Vector2((float)Math.cos(Math.toRadians(angle)),
+        (float)Math.sin(Math.toRadians(angle)));
 
-    float magnitude = (float)Math.sqrt(x*x + y*y);
-    Vector2 trajectory = new Vector2(x/magnitude, y/magnitude);
+    //TODO:variable force
+    trajectory.dot(new Vector2(25, 25));
+
     this.body.applyForceToCenter(trajectory, true);
 
   }
