@@ -265,7 +265,7 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		this.arma.getWeapon().shoot(arma.getBody().getPosition(), this.world);
-		return true;
+		return false;
 	}
 
 	/**
@@ -293,6 +293,7 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	 */
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		this.arma.getWeapon().shoot(arma.getBody().getPosition(), this.world);
 		return false;
 	}
 

@@ -3,6 +3,7 @@ package com.armadillo.game.model;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -21,7 +22,8 @@ public class Bullet extends Actor {
     setBounds(getX(),getY(),10, 10);
 
     BodyDef bodyDef = new BodyDef();
-    bodyDef.type = BodyDef.BodyType.DynamicBody;
+    bodyDef.type = BodyType.DynamicBody;
+    bodyDef.bullet = true;
     bodyDef.position.set((this.getX() + this.getWidth()/2) /
             PIXELS_TO_METERS,
         (this.getY() + this.getHeight()/2) / PIXELS_TO_METERS);
@@ -33,7 +35,7 @@ public class Bullet extends Actor {
         (float)Math.sin(Math.toRadians(angle)));
 
     //TODO:variable force
-    trajectory.dot(new Vector2(25, 25));
+    //trajectory.dot(new Vector2(25, 25));
 
     this.body.applyForceToCenter(trajectory, true);
 
@@ -65,7 +67,7 @@ public class Bullet extends Actor {
 
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = shape;
-    fixtureDef.density = .5f;
+    fixtureDef.density = .1f;
     fixtureDef.restitution = .2f;
     fixtureDef.filter.categoryBits = MaskBits.BULLET_ENTITY.mask;
     fixtureDef.filter.maskBits = (short) (MaskBits.WORLD_ENTITY.mask | MaskBits.PHYSICS_ENTITY.mask);

@@ -142,7 +142,6 @@ public class MainCharacter extends GameCharacter {
     if(!isWeaponHidden) {
       //setting the weapon to the center of the Base
       this.weapon.setPosition(this.baseSprite.getX(), this.baseSprite.getY() + this.getHeight()/3);
-      this.weapon.setOrigin(this.baseSprite.getOriginX(), this.baseSprite.getOriginY());
       this.weapon.draw(batch, alpha);
     }
   }
