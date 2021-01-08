@@ -88,7 +88,6 @@ public class Weapon extends Actor {
   public void shoot(Vector2 place, World world) {
     this.bulletList.add(new Bullet(this.damage, this.getX(), this.getY(),
         this.getRotation(), world));
-    System.out.println(String.format("this.x: %f, this.y: %f ", this.getX()/100, this.getY()/100));
   }
 
   public List<Bullet> getBulletList() {

@@ -1,6 +1,9 @@
-28 DAYS UNTIL GOAL OF JAN 20th
-GOALS: ADJUST AS NECESSARY- most of these need to be detailed/expedited so the game can be actually
-playable
+immediate to-do list:
+  - fix bullets/ make it not break the game-- bullets break the jumpcontact class
+     - also dont shoot in the right direction
+  - enemies
+
+
 --------------------------------------------------------------------------------------------
 
 - Create a builder for the Character class that has the ability to place actors at any point on the

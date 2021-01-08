@@ -55,6 +55,7 @@ public class GameMap {
       }
   }
 
+  //TODO: support circles
   //creates a Shape out of a MapObject
   private Shape objectToShape(MapObject object, String... markers) {
     Shape bodyshape = null;

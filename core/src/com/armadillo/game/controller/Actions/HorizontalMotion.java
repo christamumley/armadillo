@@ -1,12 +1,8 @@
 package com.armadillo.game.controller.Actions;
-
-
 import com.armadillo.game.model.GameCharacter;
 import com.armadillo.game.model.MainCharacter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
-import sun.rmi.rmic.Main;
-
 public class HorizontalMotion extends Action {
 
   private boolean move;

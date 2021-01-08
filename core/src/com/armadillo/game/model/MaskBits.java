@@ -4,8 +4,8 @@ public enum MaskBits {
 
   PHYSICS_ENTITY(0x1),  // 0001
   WORLD_ENTITY(0x1 << 1), // 0010 or 0x2 in hex
-  CHARACTER_ENTITY(0x1 << 2); //0100
-
+  CHARACTER_ENTITY(0x1 << 2), //0100
+  BULLET_ENTITY(0x1 << 3); //1000
 
   public final short mask;
   MaskBits(int mask) {

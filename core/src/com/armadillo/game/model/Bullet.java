@@ -1,17 +1,12 @@
 package com.armadillo.game.model;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import java.util.Objects;
 
 public class Bullet extends Actor {
 
@@ -34,7 +29,6 @@ public class Bullet extends Actor {
 
     this.setDefaultFixture();
 
-    System.out.println(String.format("bullet: x: %f, y: %f", this.body.getPosition().x, this.body.getPosition().y));
 
     float magnitude = (float)Math.sqrt(x*x + y*y);
     Vector2 trajectory = new Vector2(x/magnitude, y/magnitude);
@@ -70,7 +64,7 @@ public class Bullet extends Actor {
     fixtureDef.shape = shape;
     fixtureDef.density = .5f;
     fixtureDef.restitution = .2f;
-    fixtureDef.filter.categoryBits = MaskBits.PHYSICS_ENTITY.mask;
+    fixtureDef.filter.categoryBits = MaskBits.BULLET_ENTITY.mask;
     fixtureDef.filter.maskBits = (short) (MaskBits.WORLD_ENTITY.mask | MaskBits.PHYSICS_ENTITY.mask);
     fixtureDef.friction = 1F;
 

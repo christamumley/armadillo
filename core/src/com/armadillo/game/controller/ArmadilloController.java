@@ -16,7 +16,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -85,6 +84,7 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 		world.setContactListener(new JumpContact(arma));
 
 		stage.addActor(arma);
+
 
 //		actor2 = new MyActor(world, img, 300, 600);
 //		actor2.setVisible(true);
@@ -265,7 +265,6 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		this.arma.getWeapon().shoot(arma.getBody().getPosition(), this.world);
-		System.out.println(String.format("arma: x: %f, y:5f",arma.getBody().getPosition().x, arma.getBody().getPosition().y));
 		return true;
 	}
 
@@ -312,7 +311,6 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 		float m = deltay/deltax;
 		float angle = (float)Math.toDegrees(Math.atan2(deltay, deltax));
 		arma.getWeapon().face((int)angle, arma.isRight());
-		System.out.println(arma.getWeapon().getRotation());
 		return true;
 	}
 
