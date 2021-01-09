@@ -159,6 +159,14 @@ public abstract class GameCharacter extends Group {
     this.hp = hp;
   }
 
+  public void takeDamage(int damage) {
+    if (damage > this.hp) {
+      this.hp = 0;
+    } else {
+      this.hp -= damage;
+    }
+  }
+
   /**
    * Gets the Box2d Body of the Character.
    * @return the Body of the Character.

@@ -1,5 +1,6 @@
-package com.armadillo.game.model;
+package com.armadillo.game.model.contactListeners;
 
+import com.armadillo.game.model.MainCharacter;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -19,6 +20,7 @@ public class JumpContact implements ContactListener {
   MainCharacter player;
   boolean playerContact;
   int numContacts = 0;
+
 
   public JumpContact(MainCharacter player) {
     Objects.requireNonNull(player);

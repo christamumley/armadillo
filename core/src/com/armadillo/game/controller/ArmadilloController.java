@@ -8,7 +8,8 @@ import com.armadillo.game.model.Bullet;
 import com.armadillo.game.model.Enemy;
 import com.armadillo.game.model.MainCharacter;
 import com.armadillo.game.model.GameMap;
-import com.armadillo.game.model.JumpContact;
+import com.armadillo.game.model.contactListeners.GroupContactListener;
+import com.armadillo.game.model.contactListeners.JumpContact;
 import com.armadillo.game.model.Weapon;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -27,7 +28,6 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,7 +79,9 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 		arma = new MainCharacter(world, 100, armatext, gunw, tiledMap.getPlayerPoint(0));
 		arma.setDebug(true);
 
-		world.setContactListener(new JumpContact(arma));
+		GroupContactListener gc = new GroupContactListener();
+		gc.addListener(new JumpContact(arma));
+		world.setContactListener(gc);
 
 		stage.addActor(arma);
 
@@ -123,13 +125,6 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 				getHeight());
 		stage.getViewport().setCamera(camera);
 
-		//Create a copy of camera projection matrix
-
-
-//BoxObjectManager.BOX_TO_WORLD = 100f
-//Scale it by 100 as our box physics bodies are scaled down by 100
-
-
 		debugRenderer=new Box2DDebugRenderer();
 	}
 	@Override
@@ -145,12 +140,14 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 				destroyedBullet.add(b);
 			}
 		}
-		System.out.println("Bullets" + this.arma.getWeapon().getBulletList().size());
+
 		if(destroyedBullet.size() > 0) {
 			for(Bullet b: destroyedBullet) {
 				this.arma.getWeapon().getBulletList().remove(b);
 			}
 		}
+
+		this.arma.getWeapon().cleanUpBullets();
 
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -352,22 +349,5 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 		return this.world;
 	}
 
-	public List<Enemy> getEnemies() {
-		//TODO: get the list of enemies
-		return new ArrayList<>();
-	}
-
-	public MainCharacter getMainCharacter() {
-		return this.arma;
-	}
-
-	public List<Bullet> getEnemyBullets() {
-		//TODO:
-		return new ArrayList<>();
-	}
-
-	public List<Bullet> getMainCharacterBullets() {
-		return arma.getWeapon().getBulletList();
-	}
 
 }

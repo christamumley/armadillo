@@ -17,14 +17,20 @@ import java.util.List;
  */
 public class Weapon extends Actor {
 
+  //number of weapons in the game
+  private static int numWeapon = 0;
+
   //image of the weapon that will be superimposed on the Base character
   private Sprite sprite;
   private Texture upsidedown_texture;
   private Texture texture;
   private int damage = 10;
+  private int id = 0;
   private List<Bullet> bulletList = new ArrayList<>();
 
   public Weapon(Texture texture) {
+    numWeapon++;
+    this.id = numWeapon;
     this.sprite = new Sprite(texture);
     setBounds(getX(),getY(),texture.getWidth(),texture.getHeight());
     this.texture = texture;
@@ -87,7 +93,8 @@ public class Weapon extends Actor {
    * @param world the box2d World to append the bullet to
    */
   public void shoot(World world) {
-    this.bulletList.add(new Bullet(this.damage, this.sprite.getX() + this.sprite.getWidth()/2,
+    this.bulletList.add(new Bullet(this, this.damage,
+        this.sprite.getX() + this.sprite.getWidth()/2,
         this.sprite.getY() + this.sprite.getHeight()/2,
         this.getRotation(), world));
   }
@@ -96,6 +103,21 @@ public class Weapon extends Actor {
     return this.bulletList;
   }
 
+
+  /**
+   * Culls the Bullets without Box2D fixtures.
+   */
+  public void cleanUpBullets() {
+    List<Bullet> cleanUp = new ArrayList<>();
+    for(Bullet b : this.bulletList) {
+      if(b.isEmpty()) {
+        cleanUp.add(b);
+      }
+    }
+    for(Bullet b : cleanUp) {
+      this.bulletList.remove(b);
+    }
+  }
 
 
   /**
@@ -135,5 +157,11 @@ public class Weapon extends Actor {
     return p2;
   }
 
-
+  /**
+   * Gets the ID number for this weapon.
+   * @return
+   */
+  public int getID() {
+    return this.id;
+  }
 }

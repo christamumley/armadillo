@@ -1,4 +1,4 @@
-package com.armadillo.game.model;
+package com.armadillo.game.model.contactListeners;
 
 import com.armadillo.game.controller.ArmadilloController;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;

@@ -1,9 +1,7 @@
 package com.armadillo.game.model;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -17,8 +15,14 @@ public class Bullet extends Actor {
 
   final float PIXELS_TO_METERS = 100f;
   Body body;
+  Weapon weapon;
+  int damage = 0;
 
-  public Bullet(int damage, float x, float y, float angle, World world) {
+  public Bullet(Weapon weapon, int damage, float x, float y, float angle, World world) {
+
+    this.weapon = weapon;
+    if(damage < 0) throw new IllegalArgumentException("Weapon Damage Cannot be Negative.");
+    this.damage = damage;
 
     this.setX(x);
     this.setY(y);
@@ -55,8 +59,8 @@ public class Bullet extends Actor {
 
     FixtureDef fixtureDef = new FixtureDef();
     fixtureDef.shape = shape;
-    fixtureDef.density = .11f;
-    fixtureDef.restitution = .2f;
+    fixtureDef.density = this.encodeDamage(this.damage);
+    fixtureDef.restitution = this.encodeWeapon();
     fixtureDef.filter.categoryBits = MaskBits.BULLET_ENTITY.mask;
     fixtureDef.filter.maskBits = (short) (MaskBits.WORLD_ENTITY.mask | MaskBits.PHYSICS_ENTITY.mask);
     fixtureDef.friction = 1F;
@@ -85,6 +89,54 @@ public class Bullet extends Actor {
     } else {
       return false;
     }
+  }
+
+  /**
+   * Gets the weapon that fired the Bullet. Potentially can be null.
+   * @return the weapon that fired the Bullet
+   */
+  public Weapon getWeapon() {
+    return this.weapon;
+  }
+
+  //the density of the bullet is always 0.1 followed by extra numbers of precision.
+  //the damage of a Bullet can be from 0-100, and is added to the density after dividing it by 100.
+  //to get the damage back from the density, subtract .1 from the density and multiply by 1000.
+  private float encodeDamage(int damage) {
+    return (float)(.1 + damage/1000);
+  }
+
+  //the restitution of a Bullet has the weaponID encoded into it.
+  //to get the weapon ID Back from the Restitution,
+  //multiply by 1000
+  private float encodeWeapon() {
+    return this.weapon.getID()/1000f;
+  }
+
+  /**
+   * returns a damage value encoded in the density
+   * @param density the given density
+   * @return damage value
+   */
+  public static float densityToDamage(float density ) {
+    return (float)(density - .1)*1000;
+  }
+
+  /**
+   * returns the WeaponID encoded in the restitution
+   * @param res the given restitution
+   * @return the weapon ID
+   */
+  public static int restitutionToWeaponID(float res) {
+    return (int)(res * 1000);
+  }
+
+  /**
+   * Checks if the Bullet's Box2d Body lacks a fixture.
+   * @return true if there are no Fixtures on the Body
+   */
+  public boolean isEmpty() {
+    return (this.body.getFixtureList().size == 0);
   }
 
 }
