@@ -86,7 +86,7 @@ public class Weapon extends Actor {
    * Fires a Bullet in the direction of the weapon rotation.
    * @param world the box2d World to append the bullet to
    */
-  public void shoot(Vector2 place, World world) {
+  public void shoot(World world) {
     this.bulletList.add(new Bullet(this.damage, this.sprite.getX() + this.sprite.getWidth()/2,
         this.sprite.getY() + this.sprite.getHeight()/2,
         this.getRotation(), world));

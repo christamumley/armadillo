@@ -54,8 +54,6 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	public void create() {
 		Gdx.input.setInputProcessor(this);
 
-
-
 		world = new World(new Vector2(0, -9f),true);
 
   	camera = new OrthographicCamera();
@@ -140,13 +138,26 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 		world.step(1f/60f, 6, 2);
 		stage.act();
 
+
+		ArrayList<Bullet> destroyedBullet = new ArrayList<>();
+		for(Bullet b : this.arma.getWeapon().getBulletList()){
+			if(b.destroyIfOutsideCamera(this.camera)) {
+				destroyedBullet.add(b);
+			}
+		}
+		System.out.println("Bullets" + this.arma.getWeapon().getBulletList().size());
+		if(destroyedBullet.size() > 0) {
+			for(Bullet b: destroyedBullet) {
+				this.arma.getWeapon().getBulletList().remove(b);
+			}
+		}
+
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		//batch.setProjectionMatrix(camera.combined);
 
 		debugMatrix=new Matrix4(camera.combined);
 		debugMatrix.scale(100f, 100f, 1f);
-
 
 		tiledMap.render();
 
@@ -264,7 +275,7 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	 */
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		this.arma.getWeapon().shoot(arma.getBody().getPosition(), this.world);
+		this.arma.getWeapon().shoot(this.world);
 		return false;
 	}
 
@@ -293,7 +304,7 @@ public class ArmadilloController extends ApplicationAdapter implements InputProc
 	 */
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		this.arma.getWeapon().shoot(arma.getBody().getPosition(), this.world);
+		this.arma.getWeapon().shoot(this.world);
 		return false;
 	}
 
